@@ -9,7 +9,12 @@ interface GetConcertReqBody {
   prefecture?: string;
 }
 
-interface GetConcert extends Concert {
+interface GetConcert {
+  id: Concert['id'];
+  title: Concert['title'];
+  location: Concert['location'];
+  date: Concert['date'];
+  symphonies: Concert['symphonies'];
   orchestra: {
     id: Orchestra['id'];
     name: Orchestra['name'];
@@ -41,15 +46,10 @@ export const getConcerts = async (
         const concert: GetConcert = {
           id: doc.id,
           title: data.title,
-          programs: data.programs,
           location: data.location,
           date: data.date.toDate(),
-          openAt: data.openAt.toDate(),
-          startAt: data.startAt.toDate(),
-          closeAt: data.closeAt.toDate(),
-          participantsCount: data.participantsCount,
-          orchestra: data.orchestra,
           symphonies: data.symphonies,
+          orchestra: data.orchestra,
         };
 
         return concert;
