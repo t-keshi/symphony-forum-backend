@@ -24,4 +24,3 @@ localhost:4000 にアプリケーションが起動します
 | `yarn fix`    | リントとフォーマットをかける |
 | `yarn test`   | テストを動かす               |
 | `yarn deploy` | api をデプロイする           |
-# symphony-forum-backend
