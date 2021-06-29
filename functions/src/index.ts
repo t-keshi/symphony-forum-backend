@@ -1,6 +1,8 @@
 import functions = require('firebase-functions');
 import admin = require('firebase-admin');
 import express = require('express');
+import { onUserSignUp } from './controller/authentication/onUserSignUp';
+import { onOrchestraUpdate } from './controller/concert/onOrchestraUpdate';
 import { router } from './infra/router';
 import serviceAccount from './serviceAccount.json';
 import logger = require('morgan');
@@ -28,3 +30,13 @@ app.use(logger('short'));
 router(app);
 
 exports.api = functions.region('asia-northeast1').https.onRequest(app);
+
+exports.signUp = functions
+  .region('asia-northeast1')
+  .auth.user()
+  .onCreate(onUserSignUp);
+
+exports.orchestraUpdate = functions
+  .region('asia-northeast1')
+  .firestore.document('orchestra/{orchestraId}')
+  .onUpdate(onOrchestraUpdate);
