@@ -1,8 +1,8 @@
 import express = require('express');
 import admin = require('firebase-admin');
+import { ErrorResponse } from '../../constants/errors';
 import { Participation } from '../../domain/participation';
 import { COLLECTION_NAMES } from '../../infra/endPoints';
-import { ErrorResponse } from '../errors';
 
 type PutParticipationReqBody = Participation;
 

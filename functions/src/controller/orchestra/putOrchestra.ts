@@ -1,8 +1,8 @@
 import express = require('express');
 import admin = require('firebase-admin');
+import { ErrorResponse } from '../../constants/errors';
 import { Orchestra } from '../../domain/orchestra';
 import { COLLECTION_NAMES } from '../../infra/endPoints';
-import { ErrorResponse } from '../errors';
 
 export const putOrchestra = async (
   req: express.Request<void, void, Orchestra>,

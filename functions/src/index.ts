@@ -4,6 +4,7 @@ import express = require('express');
 import { router } from './infra/router';
 import serviceAccount from './serviceAccount.json';
 import logger = require('morgan');
+import cors = require('cors');
 
 const params = {
   type: serviceAccount.type,
@@ -22,6 +23,7 @@ admin.initializeApp({ credential: admin.credential.cert(params) });
 
 const app = express();
 
+app.use(cors({ credentials: true }));
 app.use(logger('short'));
 router(app);
 

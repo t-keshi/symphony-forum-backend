@@ -1,7 +1,7 @@
 import express = require('express');
 import admin = require('firebase-admin');
+import { ErrorResponse } from '../../constants/errors';
 import { COLLECTION_NAMES } from '../../infra/endPoints';
-import { ErrorResponse } from '../errors';
 
 interface OrchestraRes {
   id: string;

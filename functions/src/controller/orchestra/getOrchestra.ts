@@ -1,8 +1,8 @@
 import express = require('express');
 import admin = require('firebase-admin');
+import { ErrorResponse, ERRORS } from '../../constants/errors';
 import { Orchestra } from '../../domain/orchestra';
 import { COLLECTION_NAMES } from '../../infra/endPoints';
-import { ErrorResponse, ERRORS } from '../errors';
 
 interface GetConcertParams {
   id: string;

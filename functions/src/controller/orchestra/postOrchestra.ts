@@ -1,8 +1,8 @@
 import express = require('express');
 import admin = require('firebase-admin');
+import { ErrorResponse } from '../../constants/errors';
 import { Orchestra } from '../../domain/orchestra';
 import { COLLECTION_NAMES } from '../../infra/endPoints';
-import { ErrorResponse } from '../errors';
 
 interface PostOrchestraParams {
   id: string;
@@ -13,6 +13,10 @@ export const postOrchestra = async (
   res: express.Response<void | ErrorResponse>,
 ) => {
   req.setTimeout(5 * 60 * 1000);
+  res.set('Access-Control-Allow-Origin', '*');
+  res.set('Access-Control-Allow-Headers', 'Content-Type, authorization');
+  res.set('Access-Control-Allow-Methods', 'GET,HEAD,PUT,PATCH,POST,DELETE');
+  res.set('Access-Control-Max-Age', '3600');
   const db = admin.firestore();
   const { body } = req;
 

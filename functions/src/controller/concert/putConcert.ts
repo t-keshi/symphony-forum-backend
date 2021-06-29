@@ -1,9 +1,9 @@
 import express = require('express');
 import admin = require('firebase-admin');
+import { ErrorResponse, ERRORS } from '../../constants/errors';
 import { Concert } from '../../domain/concert';
 import { COLLECTION_NAMES } from '../../infra/endPoints';
 import { OmitId } from '../../utility';
-import { ErrorResponse } from '../errors';
 
 interface PutConcertParams {
   id: string;
@@ -31,9 +31,11 @@ export const putConcert = async (
       closeAt: body.closeAt,
     });
 
+    res.set('Access-Control-Allow-Origin', '*');
     return res.status(200);
   } catch (error) {
     console.error(error, req, res);
-    return res.status(500);
+    res.set('Access-Control-Allow-Origin', '*');
+    return res.status(400).send({ error: ERRORS.ConcertNotFound });
   }
 };

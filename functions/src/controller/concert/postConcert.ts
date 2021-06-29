@@ -1,19 +1,17 @@
 import express = require('express');
-import admin = require('firebase-admin');
-import firebase from 'firebase/app';
+import { ErrorResponse, ERRORS } from '../../constants/errors';
+import { Prefecture } from '../../constants/prefectures';
 import { Orchestra } from '../../domain/orchestra';
 import { COLLECTION_NAMES } from '../../infra/endPoints';
-import { ErrorResponse } from '../errors';
+import admin = require('firebase-admin');
 
 interface PostConcertReq {
   title: string;
   date: Date;
-  location: string;
+  address: string;
   placeId: string;
+  prefecture: Prefecture | null;
   symphonies: string[];
-  openAt: Date;
-  startAt: Date;
-  closeAt: Date;
   orchestra: {
     id: Orchestra['id'];
     name: Orchestra['name'];
@@ -22,30 +20,34 @@ interface PostConcertReq {
 
 export const postConcert = async (
   req: express.Request<void, void, PostConcertReq>,
-  res: express.Response<void | ErrorResponse>,
+  res: express.Response<void | string | ErrorResponse>,
 ) => {
-  req.setTimeout(5 * 60 * 1000);
   const db = admin.firestore();
   const { body } = req;
 
   try {
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Headers', 'Content-Type, authorization');
+    res.header(
+      'Access-Control-Allow-Methods',
+      'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+    );
+    res.header('Access-Control-Max-Age', '3600');
+
     const concertRef = db.collection(COLLECTION_NAMES.concert);
     await concertRef.add({
       title: body.title,
-      date: firebase.firestore.Timestamp.fromDate(body.date),
-      location: body.location,
+      date: admin.firestore.Timestamp.fromDate(new Date(body.date)),
+      address: body.address,
       placeId: body.placeId,
+      prefecture: body.prefecture,
       symphonies: body.symphonies,
       orchestra: body.orchestra,
-      programs: '',
-      openAt: '',
-      startAt: '',
-      closeAt: '',
+      createdAt: admin.firestore.FieldValue.serverTimestamp(),
     });
 
-    return res.status(200);
+    return res.status(200).send('success');
   } catch (error) {
-    console.error(error, req, res);
-    return res.status(500);
+    return res.status(400).send({ error: ERRORS.ConcertNotFound });
   }
 };

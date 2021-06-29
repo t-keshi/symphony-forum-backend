@@ -1,15 +1,26 @@
 import express = require('express');
 import admin = require('firebase-admin');
-import { Concert } from '../../domain/concert';
+import { ErrorResponse, ERRORS } from '../../constants/errors';
+import { Prefecture } from '../../constants/prefectures';
 import { Orchestra } from '../../domain/orchestra';
 import { COLLECTION_NAMES } from '../../infra/endPoints';
-import { ErrorResponse, ERRORS } from '../errors';
 
 interface GetConcertParams {
   id: string;
 }
 
-interface GetConcert extends Concert {
+interface GetConcert {
+  id: string;
+  title: string;
+  date: Date;
+  address: string;
+  placeId: string;
+  prefecture: Prefecture | null;
+  symphonies: string[];
+  programs: string;
+  openAt: Date;
+  startAt: Date;
+  closeAt: Date;
   orchestra: {
     id: Orchestra['id'];
     name: Orchestra['name'];
@@ -20,7 +31,6 @@ export const getConcert = async (
   req: express.Request<GetConcertParams, GetConcert>,
   res: express.Response<GetConcert | ErrorResponse>,
 ) => {
-  req.setTimeout(5 * 60 * 1000);
   const db = admin.firestore();
 
   try {
@@ -39,21 +49,23 @@ export const getConcert = async (
     const concert: GetConcert = {
       id,
       title: data.title,
-      programs: data.programs,
-      location: data.location,
+      address: data.address,
+      placeId: data.placeId,
+      prefecture: data.prefecture,
       date: data.date.toDate(),
+      symphonies: data.symphonies,
+      programs: data.programs,
       openAt: data.openAt.toDate(),
       startAt: data.startAt.toDate(),
       closeAt: data.closeAt.toDate(),
-      participantsCount: data.participantsCount,
       orchestra: data.orchestra,
-      symphonies: data.symphonies,
     };
 
     res.set('Access-Control-Allow-Origin', '*');
     return res.status(200).send(concert);
   } catch (error) {
     console.error(error, req, res);
+    res.set('Access-Control-Allow-Origin', '*');
     return res.status(500);
   }
 };
