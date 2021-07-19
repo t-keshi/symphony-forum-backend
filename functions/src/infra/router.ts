@@ -10,7 +10,6 @@ import { getOrchestra } from '../controller/orchestra/getOrchestra';
 import { getOrchestras } from '../controller/orchestra/getOrchestras';
 import { postOrchestra } from '../controller/orchestra/postOrchestra';
 import { putOrchestra } from '../controller/orchestra/putOrchestra';
-import { postParticipation } from '../controller/participation/postPerticipation';
 import { END_POINTS } from './endPoints';
 
 export const router = (app: express.Express): void => {
@@ -25,8 +24,6 @@ export const router = (app: express.Express): void => {
   app.get(`/${END_POINTS.orchestras}/:id`, getOrchestra);
   app.post(`/${END_POINTS.orchestras}`, postOrchestra);
   app.put(`/${END_POINTS.orchestras}`, putOrchestra);
-  // participation
-  app.post(`/${END_POINTS.participation}`, postParticipation);
   // belong
   app.post(`/${END_POINTS.belong}`, postBelong);
   // error
