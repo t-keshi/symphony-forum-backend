@@ -1,8 +1,12 @@
 import functions = require('firebase-functions');
 import admin = require('firebase-admin');
 import express = require('express');
+import { onOrchestraCreate } from './controller/authentication/onOrchestraCreate';
 import { onUserSignUp } from './controller/authentication/onUserSignUp';
 import { onOrchestraUpdate } from './controller/concert/onOrchestraUpdate';
+import { onConcertCancel } from './controller/participation/onConcertCancel';
+import { onConcertParticipate } from './controller/participation/onConcertParticipate';
+import { onProfileUpdate } from './controller/participation/onProfileUpdate';
 import { router } from './infra/router';
 import serviceAccount from './serviceAccount.json';
 import logger = require('morgan');
@@ -40,3 +44,23 @@ exports.orchestraUpdate = functions
   .region('asia-northeast1')
   .firestore.document('orchestra/{orchestraId}')
   .onUpdate(onOrchestraUpdate);
+
+exports.orchestraCreate = functions
+  .region('asia-northeast1')
+  .firestore.document('orchestra/{orchestraId}')
+  .onCreate(onOrchestraCreate);
+
+exports.concertParticipate = functions
+  .region('asia-northeast1')
+  .firestore.document('participation/{participateId}')
+  .onCreate(onConcertParticipate);
+
+exports.concertCancel = functions
+  .region('asia-northeast1')
+  .firestore.document('participation/{participateId}')
+  .onDelete(onConcertCancel);
+
+exports.profileUpdate = functions
+  .region('asia-northeast1')
+  .firestore.document('user/{uid}')
+  .onUpdate(onProfileUpdate);
