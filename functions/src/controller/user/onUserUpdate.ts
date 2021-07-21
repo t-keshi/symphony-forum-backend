@@ -7,7 +7,7 @@ interface UserDocument {
   part: string;
 }
 
-export const onProfileUpdate = async (
+export const onUserUpdate = async (
   user: functions.Change<functions.firestore.QueryDocumentSnapshot>,
 ) => {
   const db = admin.firestore();

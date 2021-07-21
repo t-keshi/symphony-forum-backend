@@ -1,13 +1,12 @@
 import functions = require('firebase-functions');
 import admin = require('firebase-admin');
 import express = require('express');
-import { onOrchestraCreate } from './controller/authentication/onOrchestraCreate';
-import { onUserSignUp } from './controller/authentication/onUserSignUp';
-import { onOrchestraUpdate } from './controller/concert/onOrchestraUpdate';
-import { onConcertCancel } from './controller/participation/onConcertCancel';
-import { onConcertParticipate } from './controller/participation/onConcertParticipate';
-import { onProfileUpdate } from './controller/participation/onProfileUpdate';
-import { router } from './infra/router';
+import { onConcertCancel } from './controller/concert/onConcertCancel';
+import { onConcertParticipate } from './controller/concert/onConcertParticipate';
+import { onOrchestraCreate } from './controller/orchestra/onOrchestraCreate';
+import { onOrchestraUpdate } from './controller/orchestra/onOrchestraUpdate';
+import { onUserSignUp } from './controller/user/onUserSignUp';
+import { onUserUpdate } from './controller/user/onUserUpdate';
 import serviceAccount from './serviceAccount.json';
 import logger = require('morgan');
 import cors = require('cors');
@@ -27,15 +26,7 @@ const params = {
 
 admin.initializeApp({ credential: admin.credential.cert(params) });
 
-const app = express();
-
-app.use(cors({ credentials: true }));
-app.use(logger('short'));
-router(app);
-
-exports.api = functions.region('asia-northeast1').https.onRequest(app);
-
-exports.signUp = functions
+exports.userSignUp = functions
   .region('asia-northeast1')
   .auth.user()
   .onCreate(onUserSignUp);
@@ -60,7 +51,7 @@ exports.concertCancel = functions
   .firestore.document('participation/{participateId}')
   .onDelete(onConcertCancel);
 
-exports.profileUpdate = functions
+exports.userUpdate = functions
   .region('asia-northeast1')
   .firestore.document('user/{uid}')
-  .onUpdate(onProfileUpdate);
+  .onUpdate(onUserUpdate);

@@ -9,6 +9,8 @@ interface OrchestraDocument {
   subConductor?: string;
   homePage: string | null;
   managementUserId: string;
+  avatarUrl: string;
+  coverUrl: string;
 }
 
 export const onOrchestraCreate = async (
@@ -18,10 +20,25 @@ export const onOrchestraCreate = async (
   const db = admin.firestore();
   const newOrchestraDocument = orchestra.data() as OrchestraDocument;
   const managementUserId = newOrchestraDocument.managementUserId;
-  const documentSnapshotOfManagementUser = db
-    .collection('user')
-    .doc(managementUserId);
-  await documentSnapshotOfManagementUser.update({
+
+  // userUpdate
+  const documentOfUser = db.collection('user').doc(managementUserId);
+  await documentOfUser.update({
     managementOrchestraId: context.params.orchestraId,
+  });
+
+  // belongUpdate
+  const collectionOfBelong = db.collection('belong');
+  await collectionOfBelong.add({
+    managementOrchestraId: context.params.orchestraId,
+    orchestraSnippets: {
+      id: context.params.orchestraId,
+      name: newOrchestraDocument.name,
+      description: newOrchestraDocument.description,
+      avatarUrl: newOrchestraDocument.avatarUrl,
+    },
+    userSnippets: {
+      uid: newOrchestraDocument.managementUserId,
+    },
   });
 };
